@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { scienceUnits } from "../../../data/science-unit";
 
-export default function LessonPage() {
+export default function page() {
   const lesson = scienceUnits[0].lessons[0];
 
   return (

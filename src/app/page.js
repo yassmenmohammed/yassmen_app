@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { scienceUnits } from "./data/science-unit";
+import { scienceUnits } from "../data/science-unit";
 
 export default function HomePage() {
   return (

@@ -8,8 +8,12 @@ export default function page() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [userAnswers, setUserAnswers] = useState({});
 
-  const currentUnit = scienceUnits[activeUnitIdx];
-  const currentLesson = currentUnit.lessons[activeLessonIdx];
+  const currentUnit = scienceUnits[activeUnitIdx] ?? { lessons: [] };
+  const currentLesson = currentUnit.lessons?.[activeLessonIdx] ?? {};
+  const cognitiveObjectives = currentLesson.objectives?.cognitive ?? [];
+  const lessonImages = currentLesson.images ?? [];
+  const lessonVideos = currentLesson.videos ?? [];
+  const lessonQuestions = currentLesson.questions ?? [];
 
   // Logic for Quiz
   const handleAnswer = (qId, isCorrect) => {
@@ -17,7 +21,8 @@ export default function page() {
     alert(isCorrect ? "إجابة صحيحة! 🎉" : "حاول مرة أخرى ❌");
   };
 
-  const progress = ((activeLessonIdx + 1) / currentUnit.lessons.length) * 100;
+  const lessonCount = currentUnit.lessons?.length ?? 0;
+  const progress = lessonCount > 0 ? ((activeLessonIdx + 1) / lessonCount) * 100 : 0;
 
   return (
     <div className="flex h-screen bg-gray-50 text-right" dir="rtl">
@@ -60,7 +65,7 @@ export default function page() {
               <div className="h-full bg-green-500 transition-all duration-500" style={{width: `${progress}%`}}></div>
             </div>
           </div>
-          <h1 className="font-bold text-lg text-blue-900">{currentLesson.title}</h1>
+          <h1 className="font-bold text-lg text-blue-900">{currentLesson.title ?? "الدرس"}</h1>
         </header>
 
         <article className="p-8 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -68,19 +73,23 @@ export default function page() {
           <section className="bg-blue-50 p-6 rounded-xl border-r-8 border-blue-500 mb-8">
             <h3 className="font-bold text-blue-900 mb-2">أهداف الدرس:</h3>
             <ul className="list-disc list-inside space-y-1 text-slate-700">
-              {currentLesson.objectives.cognitive.map((obj, i) => <li key={i}>{obj}</li>)}
+              {cognitiveObjectives.length > 0 ? (
+                cognitiveObjectives.map((obj, i) => <li key={i}>{obj}</li>)
+              ) : (
+                <li>لا توجد أهداف متاحة لهذا الدرس حالياً.</li>
+              )}
             </ul>
           </section>
 
           {/* Explanation */}
-          <section className="prose prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{__html: currentLesson.explanation}} />
+          <section className="prose prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{__html: currentLesson.explanation ?? ""}} />
 
           {/* Media */}
           <div className="grid md:grid-cols-2 gap-6 mb-12">
-            {currentLesson.images.map((img, i) => (
+            {lessonImages.map((img, i) => (
               <img key={i} src={img} className="rounded-xl shadow-md cursor-pointer hover:scale-105 transition" alt="Lesson Visual" />
             ))}
-            {currentLesson.videos.map((vid, i) => (
+            {lessonVideos.map((vid, i) => (
               <div key={i} className="aspect-video">
                 <iframe src={vid} className="w-full h-full rounded-xl shadow-md" allowFullScreen></iframe>
               </div>
@@ -90,24 +99,28 @@ export default function page() {
           {/* Quiz Section */}
           <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
             <h3 className="text-2xl font-bold mb-6 text-slate-800">اختبر معلوماتك</h3>
-            {currentLesson.questions.map((q) => (
-              <div key={q.id} className="mb-8 p-4 rounded-lg bg-slate-50">
-                <p className="font-bold mb-4 text-lg">{q.q}</p>
-                <div className="flex flex-wrap gap-3">
-                  {q.type === 'mcq' && q.options.map((opt, i) => (
-                    <button key={i} onClick={() => handleAnswer(q.id, i === q.correct)} className="bg-white border p-3 rounded-lg hover:border-blue-500 transition">
-                      {opt}
-                    </button>
-                  ))}
-                  {q.type === 'tf' && (
-                    <>
-                      <button onClick={() => handleAnswer(q.id, q.correct === true)} className="bg-white border px-6 py-2 rounded-lg hover:bg-green-50">صح</button>
-                      <button onClick={() => handleAnswer(q.id, q.correct === false)} className="bg-white border px-6 py-2 rounded-lg hover:bg-red-50">خطأ</button>
-                    </>
-                  )}
+            {lessonQuestions.length > 0 ? (
+              lessonQuestions.map((q) => (
+                <div key={q.id} className="mb-8 p-4 rounded-lg bg-slate-50">
+                  <p className="font-bold mb-4 text-lg">{q.q}</p>
+                  <div className="flex flex-wrap gap-3">
+                    {q.type === 'mcq' && (q.options ?? []).map((opt, i) => (
+                      <button key={i} onClick={() => handleAnswer(q.id, i === q.correct)} className="bg-white border p-3 rounded-lg hover:border-blue-500 transition">
+                        {opt}
+                      </button>
+                    ))}
+                    {q.type === 'tf' && (
+                      <>
+                        <button onClick={() => handleAnswer(q.id, q.correct === true)} className="bg-white border px-6 py-2 rounded-lg hover:bg-green-50">صح</button>
+                        <button onClick={() => handleAnswer(q.id, q.correct === false)} className="bg-white border px-6 py-2 rounded-lg hover:bg-red-50">خطأ</button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-slate-500">لا توجد أسئلة متاحة لهذا الدرس حالياً.</p>
+            )}
           </section>
 
           {/* Navigation */}
@@ -120,7 +133,7 @@ export default function page() {
               الدرس السابق
             </button>
             <button 
-              disabled={activeLessonIdx === currentUnit.lessons.length - 1}
+              disabled={lessonCount === 0 || activeLessonIdx === lessonCount - 1}
               onClick={() => setActiveLessonIdx(v => v + 1)}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg disabled:opacity-30"
             >

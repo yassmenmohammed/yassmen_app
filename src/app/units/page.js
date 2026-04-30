@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from 'react';
 import { scienceUnits } from "../../data/science-unit";
 
@@ -14,6 +15,11 @@ export default function page() {
   const lessonImages = currentLesson.images ?? [];
   const lessonVideos = currentLesson.videos ?? [];
   const lessonQuestions = currentLesson.questions ?? [];
+  const quizRouteByLessonId = {
+    Chemical_interactions_lesson: "/units/Chemical_interactions/Chemical_interactions_quizze",
+    Speed_of_Chemical_Reactions_lesson: "/units/Chemical_interactions/Speed_of_Chemical_Reactions_quizze",
+  };
+  const externalQuizHref = quizRouteByLessonId[currentLesson.id];
 
   // Logic for Quiz
   const handleAnswer = (qId, isCorrect) => {
@@ -118,6 +124,16 @@ export default function page() {
                   </div>
                 </div>
               ))
+            ) : externalQuizHref ? (
+              <div className="text-center">
+                <p className="text-slate-600 mb-4">لا توجد أسئلة مدمجة لهذا الدرس، لكن يمكنك بدء الاختبار الكامل الآن.</p>
+                <Link
+                  href={externalQuizHref}
+                  className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+                >
+                  ابدأ الاختبار
+                </Link>
+              </div>
             ) : (
               <p className="text-slate-500">لا توجد أسئلة متاحة لهذا الدرس حالياً.</p>
             )}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { scienceUnits } from "../data/science-unit";
 
-export default function HomePage() {
+export default function page() {
   return (
     <div className="max-w-5xl mx-auto">
       <div className="text-center mb-12">

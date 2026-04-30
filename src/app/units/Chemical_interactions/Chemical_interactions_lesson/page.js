@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { scienceUnits } from "../../../data/science-unit";
+import { scienceUnits } from "../../../../data/science-unit";
 
 export default function page() {
   const lesson = scienceUnits[0].lessons[0];
@@ -12,12 +12,14 @@ export default function page() {
       {/* قسم الفيديو التعليمي */}
       <div className="mb-8 overflow-hidden rounded-2xl shadow-lg bg-black aspect-video flex items-center justify-center">
         {/* يمكنك استبدال الرابط برابط فيديو تعليمي حقيقي */}
-      <video
+      <iframe
         className="w-full h-full"
-        src="/videos/videoplayback.mp4"
-        controls
-        title="شرح سرعة التفاعل الكيميائي"
-      ></video>
+        src="https://www.youtube.com/embed/19lzmYqMY9k"
+        title="YouTube video player"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe> 
       </div>
 
       <section className="mb-8">
@@ -72,11 +74,11 @@ export default function page() {
 
       {/* أزرار التنقل */}
       <div className="mt-12 flex justify-between items-center">
-        <Link href="/units/unite1" className="text-gray-500 hover:text-indigo-600 font-medium">
+        <Link href="/units/Chemical_interactions" className="text-gray-500 hover:text-indigo-600 font-medium">
           ← العودة للوحدة
         </Link>
         <Link 
-          href="/units/unite1/lesson2" 
+          href="/units/Chemical_interactions/Speed_of_Chemical_Reactions_lesson" 
           className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg"
         >
           الدرس التالي

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { scienceUnits } from './data/science-unit.js';
+import { scienceUnits } from "../../data/science-unit";
 
 export default function page() {
   const [activeUnitIdx, setActiveUnitIdx] = useState(0);

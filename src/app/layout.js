@@ -18,8 +18,7 @@ export default function RootLayout({ children }) {
           <nav className="flex-1 p-4 space-y-2">
             <Link href="/" className="block p-3 hover:bg-indigo-800 rounded-lg transition">الرئيسية</Link>
             <div className="pt-4 pb-2 text-xs text-indigo-300 uppercase font-semibold">الوحدات الدراسية</div>
-            <Link href="/units/unite1" className="block p-3 hover:bg-indigo-800 rounded-lg text-sm">الوحدة الأولى</Link>
-            <Link href="/units/unite2" className="block p-3 hover:bg-indigo-800 rounded-lg text-sm">الوحدة الثانية</Link>
+            <Link href="/units/Chemical_interactions" className="block p-3 hover:bg-indigo-800 rounded-lg text-sm">التفاعلات الكيميائية</Link>
           </nav>
         </aside>
 
